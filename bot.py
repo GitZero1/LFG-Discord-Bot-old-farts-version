@@ -4,6 +4,7 @@ import dbManager
 from QueueSystem import MyBot, LFGManager
 from discord.ext import commands
 from voiceManager import VoiceManager
+import configparser
 
 intents = discord.Intents.all()
 intents.members = True
@@ -11,13 +12,18 @@ bot = commands.Bot(intents=intents)
 db = dbManager.SQLdb()
 db.__init__()
 
-# get server ID from file
-serverID = ""
-with open('serverID.txt') as f:
-    serverID = f.readline()
+# config
+config = configparser.ConfigParser()
+config.read('oldFartBot.conf')
+# server ID
+serverID = config.get('IDs', 'serverID')
 serverID = int(serverID)
-#channel to log vc activity
-logChannelID = 1210931110356451349 
+# ID of channel to spam with logs
+logChannelID = config.get('IDs', 'logChanID')
+logChannelID = int(logChannelID)
+# Bot Token
+TOKEN = config.get('Token', 'token')
+
 #how long LFG post stays up
 postTimeoutInSeconds = 1800 # 30 min
 #colors for LFG lsitings
@@ -496,7 +502,5 @@ async def lfg(ctx):
     """
 
 #######################################################################################################################################################################
-with open('token.txt') as f:
-    TOKEN = f.readline()
 
 bot.run(TOKEN)
