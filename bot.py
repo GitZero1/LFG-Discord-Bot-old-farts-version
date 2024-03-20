@@ -94,7 +94,7 @@ async def on_voice_state_update(member, before, after):
     #if the channel is empty now
      if before.channel != None and len(before.channel.members) == 0:
         # is it a LFG VC?
-        if db.is_lfg_channel(before.channel.id):
+        """if db.is_lfg_channel(before.channel.id):
             # get the post associated with this vc
             post = db.get_lfg_by_vc(before.channel.id)
             await before.channel.delete()
@@ -103,7 +103,7 @@ async def on_voice_state_update(member, before, after):
                 return
             #get the actual message object 
             message =  await myBot.lfgActiveChan.fetch_message(post[0])
-            await message.delete() 
+            await message.delete() """
         #is it a temp channel we made?
         if db.is_tmp_channel(before.channel.id):
             catToSort = before.channel.category
@@ -126,7 +126,7 @@ async def on_voice_state_update(member, before, after):
                                                     player=member, 
                                                     bitrate= myBot.newChanBitRate)
         # if user joins LFG Voice channel
-        if  db.is_lfg_channel(after.channel.id):
+        """if  db.is_lfg_channel(after.channel.id):
             # get the post associated with this vc
             post = db.get_lfg_by_vc(after.channel.id)
             if post == None:
@@ -162,15 +162,15 @@ async def on_voice_state_update(member, before, after):
          else:
              db.remove_player(postID = post[0], playerID = member.id)
              await update_lfg_post(message= message)
-
-
+"""
+"""
 @bot.event
 async def on_message_delete(message):
     # delete any LFG posts from the database when they done
     if db.is_lfg_post(message.id) == True:
         print("deleting LFG post from database...")
         db.delete_lfg(message.id)
-
+"""
 
 @bot.event
 async def on_guild_channel_delete(channel):
@@ -178,6 +178,9 @@ async def on_guild_channel_delete(channel):
     if db.is_lfg_channel(channelID=channel.id) == True:
         print("deleting LFG VC from database...")
         db.remove_voice_channel(channelID=channel.id)
+    if db.is_tmp_channel(channelID=channel.id) == True:
+        print("deleting temp VC from database...")
+        db.remove_tmp_channel(channelID=channel.id)
         
 
 ######## RANDOM FUNCTIONS ################################################################################################################################################
